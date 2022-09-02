@@ -10,8 +10,23 @@ document.body.appendChild(canvas);
 let backgroudImage,bulletImage,enemyImage,gameoverImage,spaceshipImage;
 
 // 우주선 좌표
-let spaceshipX = canvas.width/2-30
-let spaceshipY = canvas.height-60
+let spaceshipX = canvas.width / 2 - 30;
+let spaceshipY = canvas.height - 60;
+
+let bulletList = [] //총알들을 저장하는 리스트
+function Bullet() {
+    this.x = 0;
+    this.y = 0;
+    this.init=function() {
+        this.x = spaceshipX+18;
+        this.y = spaceshipY;
+
+        bulletList.push(this);
+    };
+ this.update = function() {
+    this.y -= 7;
+ }
+}
 function loadImage(){
  backgroudImage =new Image();
  backgroudImage.src="images/background2.png";
@@ -32,13 +47,25 @@ function loadImage(){
 let keysDown= {};
 function setupKeyboardListener() {
     document.addEventListener("keydown", function(event){
-        keysDown[event.keyCode] = true;
-        console.log("키다운객체에 들어간 값은?", keysDown);
+
+
+        keysDown[event.keyCode] = true; 
     });
-    document.addEventListener("keyup",function(event){
-        delete keysDown[event.keyCode]
-        console.log("버튼 클릭후", keysDown);
+    document.addEventListener("keyup", function(event){
+        delete keysDown[event.keyCode];
+
+        if(event.keyCode == 32) {
+            createBullet(); //총알 생성
+
+        }
     });
+}
+
+function createBullet(){
+    console.log("총알생성");
+    let b= new Bullet();//총알 하나 생성
+    b.init();
+    console.log("새로운 총알 리스트", bulletList);
 }
 
 function update() {
@@ -58,11 +85,19 @@ function update() {
     }
     // 우주선의 좌표값이 무한대로 업데이트가 되는게 아닌! 경기장 안에서만 있게 하려면??
 
+    // 총알의 y좌표 업데이트하는 함수 호출
+    for(let i=0;i<bulletList.length;i++){
+        bulletList[i].update();
+    }
 }
 
 function render() {
     ctx.drawImage(backgroudImage, 0, 0, canvas.width, canvas.height);
     ctx.drawImage(spaceshipImage,spaceshipX,spaceshipY); 
+
+    for(let i=0;i<bulletList.length;i++){
+        ctx.drawImage(bulletImage,bulletList[i].x,bulletList[i].y);
+    }
 }
 
 function main(){
