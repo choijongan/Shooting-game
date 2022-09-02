@@ -29,6 +29,18 @@ function loadImage(){
  spaceshipImage.src="images/spaceship.png";
 }
 
+let keysDown= {};
+function setupKeyboardListener() {
+    document.addEventListener("keydown", function(event){
+        keysDown[event.keyCode] = true;
+        console.log("키다운객체에 들어간 값은?", keysDown);
+    });
+    document.addEventListener("keyup",function(event){
+        delete keysDown[event.keyCode]
+        console.log("버튼 클릭후", keysDown);
+    })
+}
+
 function render() {
     ctx.drawImage(backgroudImage, 0, 0, canvas.width, canvas.height);
     ctx.drawImage(spaceshipImage,spaceshipX,spaceshipY); 
@@ -40,4 +52,5 @@ function main(){
 }
 
 loadImage();
+setupKeyboardListener();
 main();
