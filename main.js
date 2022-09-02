@@ -38,7 +38,26 @@ function setupKeyboardListener() {
     document.addEventListener("keyup",function(event){
         delete keysDown[event.keyCode]
         console.log("버튼 클릭후", keysDown);
-    })
+    });
+}
+
+function update() {
+    if(39 in keysDown){
+        spaceshipX += 5; //우주선의 속도
+    } //right
+    if(37 in keysDown){
+        spaceshipX -= 5;
+    } //left
+
+    if(spaceshipX <= 0){
+        spaceshipX=0;
+    }
+    
+    if(spaceshipX >= canvas.width - 64) {
+        spaceshipX = canvas.width - 64;
+    }
+    // 우주선의 좌표값이 무한대로 업데이트가 되는게 아닌! 경기장 안에서만 있게 하려면??
+
 }
 
 function render() {
@@ -47,7 +66,8 @@ function render() {
 }
 
 function main(){
-    render()
+    update();
+    render();
     requestAnimationFrame(main);
 }
 
