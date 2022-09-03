@@ -8,7 +8,8 @@ canvas.height=700;
 document.body.appendChild(canvas);
 
 let backgroudImage,bulletImage,enemyImage,gameoverImage,spaceshipImage;
-
+let gameOver=false // true이면 게임이 끝남, false이면 게임이 안끝남.
+let score = 0;
 // 우주선 좌표
 let spaceshipX = canvas.width / 2 - 30;
 let spaceshipY = canvas.height - 60;
@@ -18,14 +19,32 @@ function Bullet() {
     this.x = 0;
     this.y = 0;
     this.init=function() {
-        this.x = spaceshipX+18;
+        this.x = spaceshipX + 18;
         this.y = spaceshipY;
-
+        this.alive = true; //true면 살아있는 총알 false면 죽은 총알
         bulletList.push(this);
     };
  this.update = function() {
     this.y -= 7;
- }
+ };
+
+this.checkHit = function() {
+    // 총알.y <= 적군.y And
+    // 총알.x >= 적군.x and 총알.x <= 적군.x + 적군의 넓이
+    for(let i=0; i<enemyList.length;i++){
+        if(
+            this.y <=enemyList[i].y && 
+            this.x>=enemyList[i].x && 
+            this.x<=enemyList[i].x+50
+            ){
+           // 총알이 죽게됨 적군의 우주선이 없어짐, 점수 획득
+            score++;
+            this.alive = false //죽은 총알
+            enemyList.splice(i,1);
+         }
+        }
+    };
+
 }
 
 function generateRandomValue(min,max){
@@ -44,7 +63,12 @@ function Enemy() {
     };
 this.update=function(){
     this.y += 2; // 적군의 속도 조절
- }
+
+    if(this.y >= canvas.height-32){
+        gameOver = true;
+        console.log("gameover");
+    }
+ };
 }
 
 function loadImage(){
@@ -114,7 +138,10 @@ function update() {
 
     // 총알의 y좌표 업데이트하는 함수 호출
     for(let i=0;i<bulletList.length;i++){
-        bulletList[i].update();
+        if (bulletList[i].alive) {
+            bulletList[i].update();
+            bulletList[i].checkHit();
+        }
     }
 
 
@@ -126,9 +153,13 @@ function update() {
 function render() {
     ctx.drawImage(backgroudImage, 0, 0, canvas.width, canvas.height);
     ctx.drawImage(spaceshipImage,spaceshipX,spaceshipY); 
-
+    ctx.fillText(`score:${score}`, 20, 20);
+    ctx.fillStyle = "white";
+    ctx.font = "20px arial";
     for(let i=0;i<bulletList.length;i++){
-        ctx.drawImage(bulletImage,bulletList[i].x,bulletList[i].y);
+        if (bulletList[i].alive) {
+            ctx.drawImage(bulletImage,bulletList[i].x,bulletList[i].y);
+        } 
     }
 
     for(let i=0;i<enemyList.length;i++){
@@ -137,9 +168,13 @@ function render() {
 }
 
 function main(){
-    update();
-    render();
-    requestAnimationFrame(main);
+        if(!gameOver) {
+        update(); //좌표값을 업데이트하고
+        render(); //그려주고
+        requestAnimationFrame(main);
+    }else{
+        ctx.drawImage(gameoverImage, 10, 100, 380, 380);
+    }  
 }
 
 loadImage();
