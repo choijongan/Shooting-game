@@ -38,7 +38,8 @@ function Enemy() {
     this.y=0;
     this.init = function() {
         this.y= 0;
-        this.x=generateRandomValue(0, canvas.width-32)
+        this.x=generateRandomValue(0, canvas.width-32);
+        enemyList.push(this);
     }
 }
 
@@ -83,6 +84,13 @@ function createBullet(){
     console.log("새로운 총알 리스트", bulletList);
 }
 
+function createEnemy() {
+    const interval = setInterval(function(){
+        let e = new Enemy();
+        e.init();
+    },1000);
+}
+
 function update() {
     if(39 in keysDown){
         spaceshipX += 5; //우주선의 속도
@@ -113,6 +121,10 @@ function render() {
     for(let i=0;i<bulletList.length;i++){
         ctx.drawImage(bulletImage,bulletList[i].x,bulletList[i].y);
     }
+
+    for(let i=0;i<enemyList.length;i++){
+        ctx.drawImage(enemyImage,enemyList[i].x,enemyList[i].y);
+    }
 }
 
 function main(){
@@ -123,4 +135,5 @@ function main(){
 
 loadImage();
 setupKeyboardListener();
+createEnemy();
 main();
