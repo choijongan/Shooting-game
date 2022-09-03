@@ -27,6 +27,21 @@ function Bullet() {
     this.y -= 7;
  }
 }
+
+function generateRandomValue(min,max){
+    let randomNum = Math.floor(Math.random()*(max-min+1))+min
+    return randomNum
+}
+
+function Enemy() {
+    this.x=0;
+    this.y=0;
+    this.init = function() {
+        this.y= 0;
+        this.x=generateRandomValue(0, canvas.width-32)
+    }
+}
+
 function loadImage(){
  backgroudImage =new Image();
  backgroudImage.src="images/background2.png";
