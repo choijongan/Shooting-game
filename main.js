@@ -30,9 +30,10 @@ function Bullet() {
 
 function generateRandomValue(min,max){
     let randomNum = Math.floor(Math.random()*(max-min+1))+min
-    return randomNum
+    return randomNum;
 }
 
+let enemyList = [];
 function Enemy() {
     this.x=0;
     this.y=0;
@@ -40,7 +41,10 @@ function Enemy() {
         this.y= 0;
         this.x=generateRandomValue(0, canvas.width-32);
         enemyList.push(this);
-    }
+    };
+this.update=function(){
+    this.y += 2; // 적군의 속도 조절
+ }
 }
 
 function loadImage(){
@@ -111,6 +115,11 @@ function update() {
     // 총알의 y좌표 업데이트하는 함수 호출
     for(let i=0;i<bulletList.length;i++){
         bulletList[i].update();
+    }
+
+
+    for(let i=0;i<enemyList.length;i++){
+        enemyList[i].update();
     }
 }
 
